@@ -10,7 +10,7 @@
 #define SERVER_ADDR "192.168.122.20"
 
 int main(){
-	printf("herer");
+	
 	struct addrinfo hints, *servinfo;
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
@@ -22,7 +22,7 @@ int main(){
 		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
 		return 1;
 	}
-	printf("here1");
+	
 
 	int client_fd;
 	// struct addrinfo *p;
@@ -43,9 +43,9 @@ int main(){
 	// }
 
 	client_fd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
-	printf("here2");
+	
 	connect(client_fd, servinfo->ai_addr, servinfo->ai_addrlen);
-	printf("here3");
+	
 
 	freeaddrinfo(servinfo);
 
