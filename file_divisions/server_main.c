@@ -17,6 +17,17 @@ int main(){
 
 	printf("Server: Waiting for connections...\n");
 
+	int i = 0;
+
+	while(i < 4){
+		int client_fd = accept_connection(sock_fd, 4);
+
+		handle_client(client_fd);
+		++i;
+	}
+
+	/*
+
 	int client_fd =	accept_connection(sock_fd, 4); 
 
 	char buffer[1024] = {0};
@@ -28,6 +39,7 @@ int main(){
 	printf("Message sent to client.");
 
 	close(client_fd);
+	*/
 	close(sock_fd);
 
 	return 0;

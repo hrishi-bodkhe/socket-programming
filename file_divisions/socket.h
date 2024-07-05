@@ -19,4 +19,6 @@ void write_msg(int sockfd, char *msg);
 
 void read_msg(int sockfd, char buffer[], size_t buffer_size);
 
+void handle_client(int client_socket);
+
 #endif

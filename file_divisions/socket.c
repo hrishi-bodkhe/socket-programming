@@ -173,4 +173,23 @@ void read_msg(int sockfd, char buffer[], size_t buffer_size){
 	       perror("Receive Failed.");
                exit(EXIT_FAILURE);
 	}
-}	
+}
+
+void handle_client(int client_socket){
+	char buffer[1024];
+	int bytes_read;
+	char *msg = "Your Message Received.";
+
+	while((bytes_read = recv(client_socket, buffer, sizeof(buffer), 0)) > 0){
+		buffer[bytes_read] = '\0';
+		printf("Received: %s\n", buffer);
+		
+		
+		write_msg(client_socket, msg);
+	}
+
+	close(client_socket);
+	printf("Client disconnected.\n");
+}
+
+
