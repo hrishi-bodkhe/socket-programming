@@ -7,49 +7,46 @@
 
 #define SERVER_PORT 3490
 #define SERVER_ADDR "127.0.0.1"
+//#define SERVER_ADDR "192.168.122.82"
 #define MAXDATASIZE 100
 
 int main(){
-	int client_fd = create_socket(AF_INET, SOCK_STREAM, 0);
+	int client_fd = create_socket(AF_INET, SOCK_DGRAM, 0);
 
-	connect_socket(client_fd, SERVER_ADDR, SERVER_PORT, 4);
+	struct sockaddr_in server_addr;
+	socklen_t addr_size;
+
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(SERVER_PORT);
+//	server_addr.sin_addr.s_addr = inet_addr(SERVER_ADDR);
 	
-	printf("Client: connecting to\n");
-
-	char buf[MAXDATASIZE];
-	int numbytes;
-	if((numbytes = recv(client_fd, buf, MAXDATASIZE - 1, 0)) == -1){
-		perror("recv");
-		exit(1);
+	if (inet_pton(AF_INET, SERVER_ADDR, &server_addr.sin_addr) <= 0) {
+		perror("inet_pton");
+		close(client_fd);
+		exit(EXIT_FAILURE);
 	}
 
-	buf[numbytes] = '\0';
-	printf("Client: received '%s'\n", buf);
-
-	char message[1024] = {0};
-	printf("Enter msg: ");
-	scanf("%s", message);
-	write_msg(client_fd, message);
-	printf("Message sent to client.\n");
-
+	addr_size = sizeof(server_addr);
 	
-	/*	
-	int i = 0;
-	while(i < 2){
-//		char *message = "Hello Server!";
-		char message[1024] = {0};
-		printf("enter msg: ");
-		scanf("%s", message);
-		write_msg(client_fd, message);
-		printf("Message sent to Client.\n");
-		
-		char buffer[1024] = {0};
-		read_msg(client_fd, buffer, sizeof(buffer));
-		printf("Message received from Server is: %s\n", buffer);
-		++i;
+	char buffer[1024] = {0};
+	scanf("%s", buffer);
+	
+	if(sendto(client_fd, buffer, strlen(buffer), 0, (struct sockaddr*)&server_addr, addr_size) == -1){
+		perror("Send Failed.");
+		close(client_fd);
+		exit(EXIT_FAILURE);
 	}
-	*/
-	
+
+	printf("Message Sent.\n");
+
+	char recv_buff[1024] = {0};
+	if(recvfrom(client_fd, recv_buff, sizeof(recv_buff), 0, NULL, NULL) == -1){
+		perror("Receive Failed.");
+		close(client_fd);
+		exit(EXIT_FAILURE);
+	}
+
+	printf("Received Message: %s\n", recv_buff);
 
 	close(client_fd);
 
