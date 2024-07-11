@@ -6,6 +6,10 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <errno.h>
 
 int create_socket(int ai_family, int ai_socktype, int ai_protocol){
 	int sockfd = socket(ai_family, ai_socktype, ai_protocol);
@@ -192,4 +196,12 @@ void handle_client(int client_socket){
 	printf("Client disconnected.\n");
 }
 
+/*
+void sigchld_handler(int s){
+	int saved_errno = errno;
+	
+	while(waitpid(-1, NULL, WNOHANG) > 0);
 
+	errno = saved_errno;
+}
+*/
